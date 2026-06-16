@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import { Cpu } from "lucide-react";
 
 export function Navbar() {
@@ -13,7 +12,7 @@ export function Navbar() {
               <Cpu className="w-5 h-5" />
             </div>
             <span className="font-extrabold text-base tracking-tight text-blue-900 uppercase">
-              OCR PORTAL
+              OCR
             </span>
           </div>
 

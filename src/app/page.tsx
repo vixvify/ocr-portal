@@ -8,11 +8,11 @@ import { HistoryTable } from "../components/history-table";
 import { Navbar } from "../components/navbar";
 import { Sidebar } from "../components/sidebar";
 import { ChevronRight, RefreshCw } from "lucide-react";
-import { 
-  MeterReading, 
-  MeterType, 
-  ReadingStatus, 
-  INITIAL_MOCK_READINGS 
+import {
+  MeterReading,
+  MeterType,
+  ReadingStatus,
+  INITIAL_MOCK_READINGS,
 } from "../lib/data";
 
 export default function Home() {
@@ -257,10 +257,6 @@ export default function Home() {
               <h1 className="text-xl font-extrabold text-slate-900 tracking-tight">
                 Update Corrective Action Progress
               </h1>
-              <p className="text-xs text-slate-500 mt-0.5">
-                ระบบจัดการและตรวจสอบการนำเข้าค่าน้ำ/ค่าไฟของหัวเครื่องวัดด้วย
-                OCR และ AI
-              </p>
             </div>
 
             <button
