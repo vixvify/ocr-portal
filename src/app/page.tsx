@@ -1,65 +1,370 @@
-import Image from "next/image";
+"use client";
+
+import React, { useState, useEffect } from "react";
+import { DashboardStats } from "../components/dashboard-stats";
+import { OcrStudio } from "../components/ocr-studio";
+import { UploadZone } from "../components/upload-zone";
+import { HistoryTable } from "../components/history-table";
+import {
+  Cpu,
+  ChevronRight,
+  FileText,
+  Settings,
+  ShieldCheck,
+  Database,
+  Layers,
+  RefreshCw,
+} from "lucide-react";
+import {
+  MeterReading,
+  MeterType,
+  ReadingStatus,
+  INITIAL_MOCK_READINGS,
+} from "../lib/data";
 
 export default function Home() {
+  const [readings, setReadings] = useState<MeterReading[]>([]);
+  const [activeReadingId, setActiveReadingId] = useState<string | null>(null);
+  const [isScanning, setIsScanning] = useState(false);
+  const [filterStatus, setFilterStatus] = useState<ReadingStatus | "all">(
+    "all",
+  );
+  const [filterType, setFilterType] = useState<MeterType | "all">("all");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    setReadings(INITIAL_MOCK_READINGS);
+    const pending = INITIAL_MOCK_READINGS.find((r) => r.status === "pending");
+    if (pending) {
+      setActiveReadingId(pending.id);
+    } else if (INITIAL_MOCK_READINGS.length > 0) {
+      setActiveReadingId(INITIAL_MOCK_READINGS[0].id);
+    }
+  }, []);
+
+  const handleRefresh = () => {
+    setIsLoading(true);
+    setTimeout(() => {
+      setReadings(INITIAL_MOCK_READINGS);
+      const pending = INITIAL_MOCK_READINGS.find((r) => r.status === "pending");
+      setActiveReadingId(
+        pending ? pending.id : INITIAL_MOCK_READINGS[0]?.id || null,
+      );
+      setIsLoading(false);
+    }, 500);
+  };
+
+  const activeReading = readings.find((r) => r.id === activeReadingId) || null;
+
+  const handleSelectReading = (id: string) => {
+    setActiveReadingId(id);
+  };
+
+  const handleDeleteReading = (id: string) => {
+    const nextReadings = readings.filter((r) => r.id !== id);
+    setReadings(nextReadings);
+    if (activeReadingId === id) {
+      setActiveReadingId(nextReadings.length > 0 ? nextReadings[0].id : null);
+    }
+  };
+
+  const handleUpdateFields = (
+    id: string,
+    serialNumber: string,
+    currentReading: string,
+  ) => {
+    setReadings((prev) =>
+      prev.map((r) => {
+        if (r.id !== id) return r;
+
+        const serialChanged = serialNumber !== r.serialNumber;
+        const readingChanged = currentReading !== r.currentReading;
+
+        const updated = {
+          ...r,
+          serialNumber,
+          currentReading,
+          serialNumberConfidence: serialChanged
+            ? 100
+            : r.serialNumberConfidence,
+          currentReadingConfidence: readingChanged
+            ? 100
+            : r.currentReadingConfidence,
+        };
+
+        updated.boundingBoxes = updated.boundingBoxes.map((bb) => {
+          if (bb.label === "serial") {
+            return {
+              ...bb,
+              value: serialNumber,
+              confidence: serialChanged ? 1.0 : bb.confidence,
+            };
+          }
+          if (bb.label === "value") {
+            return {
+              ...bb,
+              value: currentReading,
+              confidence: readingChanged ? 1.0 : bb.confidence,
+            };
+          }
+          return bb;
+        });
+
+        return updated;
+      }),
+    );
+  };
+
+  const selectNextPending = (currentId: string, list: MeterReading[]) => {
+    const nextPending = list.find(
+      (r) => r.id !== currentId && r.status === "pending",
+    );
+    if (nextPending) {
+      setActiveReadingId(nextPending.id);
+    }
+  };
+
+  const handleApprove = (id: string) => {
+    let nextList: MeterReading[] = [];
+    setReadings((prev) => {
+      nextList = prev.map((r) =>
+        r.id === id ? { ...r, status: "approved" } : r,
+      );
+      return nextList;
+    });
+    selectNextPending(id, nextList.length > 0 ? nextList : readings);
+  };
+
+  const handleFlag = (id: string) => {
+    let nextList: MeterReading[] = [];
+    setReadings((prev) => {
+      nextList = prev.map((r) =>
+        r.id === id ? { ...r, status: "flagged" } : r,
+      );
+      return nextList;
+    });
+    selectNextPending(id, nextList.length > 0 ? nextList : readings);
+  };
+
+  const handleUploadSimulated = (
+    fileName: string,
+    meterType: MeterType,
+    style: "digital-electric" | "analog-electric" | "water-dial",
+  ) => {
+    setIsScanning(true);
+
+    setTimeout(() => {
+      const id = `READ-2026-${Math.floor(100 + Math.random() * 900)}`;
+      const previousReading =
+        meterType === "electricity" ? "41200.0" : "00180.2";
+
+      let serialNumber = "";
+      let currentReading = "";
+      let serialNumberConfidence = 0;
+      let currentReadingConfidence = 0;
+      let unit: "kWh" | "m³" = "kWh";
+
+      if (style === "digital-electric") {
+        serialNumber = `EL-${Math.floor(100000 + Math.random() * 900000)}-D`;
+        currentReading = (
+          41200 +
+          Math.floor(Math.random() * 800) +
+          Math.random()
+        ).toFixed(1);
+        serialNumberConfidence = parseFloat(
+          (90 + Math.random() * 9).toFixed(1),
+        );
+        currentReadingConfidence = parseFloat(
+          (88 + Math.random() * 11).toFixed(1),
+        );
+        unit = "kWh";
+      } else if (style === "analog-electric") {
+        serialNumber = `EL-${Math.floor(100000 + Math.random() * 900000)}-A`;
+        currentReading =
+          (41200 + Math.floor(Math.random() * 1500)).toFixed(0) + ".0";
+        serialNumberConfidence = parseFloat(
+          (85 + Math.random() * 14).toFixed(1),
+        );
+        currentReadingConfidence = parseFloat(
+          (55 + Math.random() * 30).toFixed(1),
+        );
+        unit = "kWh";
+      } else {
+        serialNumber = `WT-${Math.floor(10000 + Math.random() * 90000)}-W`;
+        currentReading = `00${(180 + Math.floor(Math.random() * 45) + Math.random()).toFixed(1)}`;
+        serialNumberConfidence = parseFloat(
+          (82 + Math.random() * 15).toFixed(1),
+        );
+        currentReadingConfidence = parseFloat(
+          (75 + Math.random() * 20).toFixed(1),
+        );
+        unit = "m³";
+      }
+
+      const newReading: MeterReading = {
+        id,
+        fileName,
+        meterType,
+        serialNumber,
+        serialNumberConfidence,
+        currentReading,
+        currentReadingConfidence,
+        previousReading,
+        unit,
+        status: "pending",
+        uploadedAt: new Date().toISOString(),
+        uploadedBy: "ทีมงานผู้ใช้งาน",
+        mockMeterStyle: style,
+        boundingBoxes: [
+          {
+            id: `bb-${Date.now()}-1`,
+            x: 25,
+            y: 15,
+            width: 50,
+            height: 12,
+            label: "serial",
+            confidence: serialNumberConfidence / 100,
+            value: serialNumber,
+          },
+          {
+            id: `bb-${Date.now()}-2`,
+            x: 28,
+            y: 45,
+            width: 44,
+            height: 20,
+            label: "value",
+            confidence: currentReadingConfidence / 100,
+            value: currentReading,
+          },
+        ],
+      };
+
+      setReadings((prev) => [newReading, ...prev]);
+      setActiveReadingId(newReading.id);
+      setIsScanning(false);
+    }, 2000);
+  };
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div className="min-h-screen bg-[#f1f5f9] text-[#0f172a] flex flex-col antialiased">
+      <header className="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-sm">
+        <div className="w-full px-6 h-16 flex items-center justify-between">
+          <div className="flex items-center gap-6">
+            <div className="flex items-center gap-2.5">
+              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-blue-700 text-white">
+                <Cpu className="w-5 h-5" />
+              </div>
+              <span className="font-extrabold text-base tracking-tight text-blue-900 uppercase">
+                OCR PORTAL
+              </span>
+            </div>
+
+            <nav className="hidden xl:flex items-center gap-1.5 text-xs font-bold text-slate-500 tracking-wide">
+              <span className="bg-blue-900 text-white rounded-md px-4 py-1.5">
+                DASHBOARD
+              </span>
+            </nav>
+          </div>
+
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 bg-blue-900 text-white rounded-md py-1 px-3">
+              <span className="text-[10px] font-bold uppercase tracking-wider">
+                Role: Admin
+              </span>
+            </div>
+            <div className="w-9 h-9 rounded-full bg-slate-200 border border-slate-300 flex items-center justify-center font-bold text-xs text-slate-700">
+              U
+            </div>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+      </header>
+
+      <div className="flex-1 flex flex-row">
+        <aside className="w-64 bg-slate-900 text-slate-300 flex flex-col border-r border-slate-800 shrink-0">
+          <div className="p-4 border-b border-slate-800 bg-slate-950/40">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
+              METER NAVIGATION
+            </span>
+          </div>
+
+          <div className="flex-1 py-3 flex flex-col gap-1">
+            <div className="px-4 py-2 text-xs font-semibold text-white bg-blue-800/60 border-l-4 border-blue-500 flex items-center gap-2.5">
+              <Layers className="w-4 h-4 text-blue-400" />
+              <span>Update Meter Readings</span>
+            </div>
+          </div>
+        </aside>
+
+        <main className="flex-1 bg-[#f4f6fc] p-6 flex flex-col gap-6 overflow-y-auto">
+          <div className="flex items-center gap-1.5 text-[11px] font-bold text-slate-500 uppercase tracking-wide">
+            <span>Response And Mitigation</span>
+            <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
+            <span>Corrective Action & Mitigation</span>
+            <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
+            <span className="text-blue-900">Update Meter Readings</span>
+          </div>
+
+          <div className="flex items-center justify-between border-b border-slate-200 pb-3">
+            <div>
+              <h1 className="text-xl font-extrabold text-slate-900 tracking-tight">
+                Update Corrective Action Progress
+              </h1>
+              <p className="text-xs text-slate-500 mt-0.5">
+                ระบบจัดการและตรวจสอบการนำเข้าค่าน้ำ/ค่าไฟของหัวเครื่องวัดด้วย
+                OCR และ AI
+              </p>
+            </div>
+
+            <button
+              onClick={handleRefresh}
+              className="flex items-center justify-center gap-1.5 py-1.5 px-3 rounded border border-slate-300 bg-white hover:bg-slate-50 text-xs font-bold text-slate-700 transition-colors shadow-sm cursor-pointer"
+            >
+              <RefreshCw
+                className={`w-3.5 h-3.5 ${isLoading ? "animate-spin" : ""}`}
+              />
+              <span>Refresh Readings</span>
+            </button>
+          </div>
+
+          <DashboardStats
+            readings={readings}
+            filterStatus={filterStatus}
+            setFilterStatus={setFilterStatus}
+          />
+
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+            <div className="lg:col-span-8">
+              <OcrStudio
+                activeReading={activeReading}
+                onUpdateFields={handleUpdateFields}
+                onApprove={handleApprove}
+                onFlag={handleFlag}
+              />
+            </div>
+
+            <div className="lg:col-span-4">
+              <UploadZone
+                isScanning={isScanning}
+                onUploadSimulated={handleUploadSimulated}
+              />
+            </div>
+          </div>
+
+          <HistoryTable
+            readings={readings}
+            activeReadingId={activeReadingId}
+            selectReading={handleSelectReading}
+            deleteReading={handleDeleteReading}
+            filterStatus={filterStatus}
+            setFilterStatus={setFilterStatus}
+            filterType={filterType}
+            setFilterType={setFilterType}
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+          />
+        </main>
+      </div>
     </div>
   );
 }
