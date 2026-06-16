@@ -5,21 +5,14 @@ import { DashboardStats } from "../components/dashboard-stats";
 import { OcrStudio } from "../components/ocr-studio";
 import { UploadZone } from "../components/upload-zone";
 import { HistoryTable } from "../components/history-table";
-import {
-  Cpu,
-  ChevronRight,
-  FileText,
-  Settings,
-  ShieldCheck,
-  Database,
-  Layers,
-  RefreshCw,
-} from "lucide-react";
-import {
-  MeterReading,
-  MeterType,
-  ReadingStatus,
-  INITIAL_MOCK_READINGS,
+import { Navbar } from "../components/navbar";
+import { Sidebar } from "../components/sidebar";
+import { ChevronRight, RefreshCw } from "lucide-react";
+import { 
+  MeterReading, 
+  MeterType, 
+  ReadingStatus, 
+  INITIAL_MOCK_READINGS 
 } from "../lib/data";
 
 export default function Home() {
@@ -248,59 +241,13 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-[#f1f5f9] text-[#0f172a] flex flex-col antialiased">
-      <header className="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-sm">
-        <div className="w-full px-6 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-6">
-            <div className="flex items-center gap-2.5">
-              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-blue-700 text-white">
-                <Cpu className="w-5 h-5" />
-              </div>
-              <span className="font-extrabold text-base tracking-tight text-blue-900 uppercase">
-                OCR PORTAL
-              </span>
-            </div>
-
-            <nav className="hidden xl:flex items-center gap-1.5 text-xs font-bold text-slate-500 tracking-wide">
-              <span className="bg-blue-900 text-white rounded-md px-4 py-1.5">
-                DASHBOARD
-              </span>
-            </nav>
-          </div>
-
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2 bg-blue-900 text-white rounded-md py-1 px-3">
-              <span className="text-[10px] font-bold uppercase tracking-wider">
-                Role: Admin
-              </span>
-            </div>
-            <div className="w-9 h-9 rounded-full bg-slate-200 border border-slate-300 flex items-center justify-center font-bold text-xs text-slate-700">
-              U
-            </div>
-          </div>
-        </div>
-      </header>
+      <Navbar />
 
       <div className="flex-1 flex flex-row">
-        <aside className="w-64 bg-slate-900 text-slate-300 flex flex-col border-r border-slate-800 shrink-0">
-          <div className="p-4 border-b border-slate-800 bg-slate-950/40">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
-              METER NAVIGATION
-            </span>
-          </div>
-
-          <div className="flex-1 py-3 flex flex-col gap-1">
-            <div className="px-4 py-2 text-xs font-semibold text-white bg-blue-800/60 border-l-4 border-blue-500 flex items-center gap-2.5">
-              <Layers className="w-4 h-4 text-blue-400" />
-              <span>Update Meter Readings</span>
-            </div>
-          </div>
-        </aside>
+        <Sidebar />
 
         <main className="flex-1 bg-[#f4f6fc] p-6 flex flex-col gap-6 overflow-y-auto">
           <div className="flex items-center gap-1.5 text-[11px] font-bold text-slate-500 uppercase tracking-wide">
-            <span>Response And Mitigation</span>
-            <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
-            <span>Corrective Action & Mitigation</span>
             <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
             <span className="text-blue-900">Update Meter Readings</span>
           </div>

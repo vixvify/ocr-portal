@@ -1,15 +1,15 @@
-'use client';
+"use client";
 
-import React, { useRef, useState } from 'react';
-import { UploadCloud, Zap, Droplet, Loader2 } from 'lucide-react';
-import { MeterType } from '../lib/data';
+import React, { useRef, useState } from "react";
+import { UploadCloud, Zap, Droplet, Loader2 } from "lucide-react";
+import { MeterType } from "../lib/data";
 
 interface UploadZoneProps {
   isScanning: boolean;
   onUploadSimulated: (
-    fileName: string, 
-    meterType: MeterType, 
-    style: 'digital-electric' | 'analog-electric' | 'water-dial'
+    fileName: string,
+    meterType: MeterType,
+    style: "digital-electric" | "analog-electric" | "water-dial",
   ) => void;
 }
 
@@ -21,9 +21,9 @@ export function UploadZone({ isScanning, onUploadSimulated }: UploadZoneProps) {
   const handleDrag = (e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    if (e.type === 'dragenter' || e.type === 'dragover') {
+    if (e.type === "dragenter" || e.type === "dragover") {
       setDragActive(true);
-    } else if (e.type === 'dragleave') {
+    } else if (e.type === "dragleave") {
       setDragActive(false);
     }
   };
@@ -48,17 +48,26 @@ export function UploadZone({ isScanning, onUploadSimulated }: UploadZoneProps) {
 
   const processUploadedFile = (name: string) => {
     setSelectedFileName(name);
-    
-    const lowerName = name.toLowerCase();
-    let type: MeterType = 'electricity';
-    let style: 'digital-electric' | 'analog-electric' | 'water-dial' = 'digital-electric';
 
-    if (lowerName.includes('water') || lowerName.includes('น้ำ') || lowerName.includes('wt')) {
-      type = 'water';
-      style = 'water-dial';
-    } else if (lowerName.includes('analog') || lowerName.includes('หมุน') || Math.random() > 0.5) {
-      type = 'electricity';
-      style = 'analog-electric';
+    const lowerName = name.toLowerCase();
+    let type: MeterType = "electricity";
+    let style: "digital-electric" | "analog-electric" | "water-dial" =
+      "digital-electric";
+
+    if (
+      lowerName.includes("water") ||
+      lowerName.includes("น้ำ") ||
+      lowerName.includes("wt")
+    ) {
+      type = "water";
+      style = "water-dial";
+    } else if (
+      lowerName.includes("analog") ||
+      lowerName.includes("หมุน") ||
+      Math.random() > 0.5
+    ) {
+      type = "electricity";
+      style = "analog-electric";
     }
 
     onUploadSimulated(name, type, style);
@@ -66,15 +75,6 @@ export function UploadZone({ isScanning, onUploadSimulated }: UploadZoneProps) {
 
   const onButtonClick = () => {
     fileInputRef.current?.click();
-  };
-
-  const handlePresetSelect = (
-    name: string,
-    type: MeterType,
-    style: 'digital-electric' | 'analog-electric' | 'water-dial'
-  ) => {
-    setSelectedFileName(name);
-    onUploadSimulated(name, type, style);
   };
 
   return (
@@ -97,9 +97,9 @@ export function UploadZone({ isScanning, onUploadSimulated }: UploadZoneProps) {
         onClick={onButtonClick}
         className={`relative flex flex-col items-center justify-center p-8 rounded-lg border-2 border-dashed transition-all duration-200 cursor-pointer min-h-[160px] ${
           dragActive
-            ? 'border-blue-500 bg-blue-50/50'
-            : 'border-slate-300 bg-slate-50 hover:bg-slate-100 hover:border-slate-400'
-        } ${isScanning ? 'pointer-events-none opacity-80' : ''}`}
+            ? "border-blue-500 bg-blue-50/50"
+            : "border-slate-300 bg-slate-50 hover:bg-slate-100 hover:border-slate-400"
+        } ${isScanning ? "pointer-events-none opacity-80" : ""}`}
       >
         <input
           ref={fileInputRef}
@@ -118,7 +118,7 @@ export function UploadZone({ isScanning, onUploadSimulated }: UploadZoneProps) {
                 Analyzing meter layout...
               </span>
               <p className="text-[10px] text-slate-500 font-mono mt-0.5">
-                {selectedFileName || 'meter_reading.png'}
+                {selectedFileName || "meter_reading.png"}
               </p>
             </div>
             <div className="w-40 h-1.5 bg-slate-200 rounded-full overflow-hidden mt-1">
@@ -129,7 +129,8 @@ export function UploadZone({ isScanning, onUploadSimulated }: UploadZoneProps) {
           <div className="flex flex-col items-center text-center">
             <UploadCloud className="w-8 h-8 text-slate-400 mb-2" />
             <p className="text-xs font-bold text-slate-700">
-              Drag & Drop file here or <span className="text-blue-700 hover:underline">Browse</span>
+              Drag & Drop file here or{" "}
+              <span className="text-blue-700 hover:underline">Browse</span>
             </p>
             <p className="text-[10px] text-slate-400 mt-1">
               Supports PNG, JPG, JPEG (Max 10MB)
@@ -137,54 +138,6 @@ export function UploadZone({ isScanning, onUploadSimulated }: UploadZoneProps) {
           </div>
         )}
       </div>
-
-      {!isScanning && (
-        <div className="flex flex-col gap-2 border-t border-slate-100 pt-4">
-          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-            Quick Simulation Presets
-          </span>
-          <div className="grid grid-cols-3 gap-2">
-            <button
-              onClick={() => handlePresetSelect('sample_digital_electricity.jpg', 'electricity', 'digital-electric')}
-              className="flex flex-col items-center gap-2 p-2.5 rounded border border-slate-200 bg-white hover:bg-slate-50 hover:border-blue-700 text-center transition-all duration-150 group cursor-pointer"
-            >
-              <div className="p-1 rounded bg-blue-50 text-blue-700 group-hover:scale-105 transition-transform">
-                <Zap className="w-3.5 h-3.5" />
-              </div>
-              <div className="text-[10px]">
-                <p className="font-bold text-slate-700">Digital</p>
-                <p className="text-slate-400 font-mono text-[9px] mt-0.5">Electric</p>
-              </div>
-            </button>
-
-            <button
-              onClick={() => handlePresetSelect('sample_analog_electricity.jpg', 'electricity', 'analog-electric')}
-              className="flex flex-col items-center gap-2 p-2.5 rounded border border-slate-200 bg-white hover:bg-slate-50 hover:border-blue-700 text-center transition-all duration-150 group cursor-pointer"
-            >
-              <div className="p-1 rounded bg-blue-50 text-blue-700 group-hover:scale-105 transition-transform">
-                <Zap className="w-3.5 h-3.5" />
-              </div>
-              <div className="text-[10px]">
-                <p className="font-bold text-slate-700">Analog</p>
-                <p className="text-slate-400 font-mono text-[9px] mt-0.5">Electric</p>
-              </div>
-            </button>
-
-            <button
-              onClick={() => handlePresetSelect('sample_water_meter.jpg', 'water', 'water-dial')}
-              className="flex flex-col items-center gap-2 p-2.5 rounded border border-slate-200 bg-white hover:bg-slate-50 hover:border-blue-700 text-center transition-all duration-150 group cursor-pointer"
-            >
-              <div className="p-1 rounded bg-blue-50 text-blue-700 group-hover:scale-105 transition-transform">
-                <Droplet className="w-3.5 h-3.5" />
-              </div>
-              <div className="text-[10px]">
-                <p className="font-bold text-slate-700">Water</p>
-                <p className="text-slate-400 font-mono text-[9px] mt-0.5">Dial</p>
-              </div>
-            </button>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
