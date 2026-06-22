@@ -1,26 +1,15 @@
 "use client";
 
-import { Cpu } from "lucide-react";
-
 export function Navbar() {
   return (
     <header className="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-sm">
       <div className="w-full px-6 h-16 flex items-center justify-between">
         <div className="flex items-center gap-6">
           <div className="flex items-center gap-2.5">
-            <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-blue-700 text-white">
-              <Cpu className="w-5 h-5" />
-            </div>
             <span className="font-extrabold text-base tracking-tight text-blue-900 uppercase">
               OCR
             </span>
           </div>
-
-          <nav className="hidden xl:flex items-center gap-1.5 text-xs font-bold text-slate-500 tracking-wide">
-            <span className="bg-blue-900 text-white rounded-md px-4 py-1.5">
-              DASHBOARD
-            </span>
-          </nav>
         </div>
 
         <div className="flex items-center gap-4">

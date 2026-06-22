@@ -17,7 +17,6 @@ export default function Home() {
   const [hasAttempted, setHasAttempted] = useState(false);
   const [analysisResult, setAnalysisResult] = useState<MeterAnalysisResponse | null>(null);
 
-  // Set the default sample on page load (test5.jpg is selected by default in screenshot)
   useEffect(() => {
     const defaultSample = WORKSPACE_SAMPLES.find(
       (s) => s.fileName === "test5.jpg"
@@ -61,14 +60,12 @@ export default function Home() {
     setHasAttempted(true);
 
     try {
-      // Pass file name or actual file to service layer
       const response = await analyzeService.analyzeImage(
         selectedFileName || "custom_uploaded_meter.jpg"
       );
       setAnalysisResult(response);
     } catch (err) {
       console.error("Analysis failed:", err);
-      // In case of error, we can fall back to null or handle error state
       setAnalysisResult(null);
     } finally {
       setIsAnalyzing(false);
@@ -83,9 +80,7 @@ export default function Home() {
         <Sidebar />
 
         <main className="flex-1 bg-[#f4f6fc] p-8 flex flex-col gap-6 overflow-y-auto">
-          {/* Main 2-Column Redesign Grid */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start max-w-7xl mx-auto w-full">
-            {/* Left Column: Upload & Samples Panel */}
             <div className="lg:col-span-5 xl:col-span-4 w-full">
               <UploadPanel
                 selectedImageUrl={selectedImageUrl}
@@ -99,7 +94,6 @@ export default function Home() {
               />
             </div>
 
-            {/* Right Column: Parameters Display Panel */}
             <div className="lg:col-span-7 xl:col-span-8 w-full">
               <AnalysisPanel
                 result={analysisResult}

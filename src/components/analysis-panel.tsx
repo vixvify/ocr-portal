@@ -17,7 +17,6 @@ export function AnalysisPanel({
 }: AnalysisPanelProps) {
   const [activeTab, setActiveTab] = useState<"parameters" | "json">("parameters");
 
-  // Map fields to display details
   const definitions = [
     { key: "correct_v_scm", name: "CORRECT V. (SCM) / Vb", description: "ค่า Corrected Volume (SCM) หรือ Vb" },
     { key: "line_v_m3", name: "LINE V. (M3)", description: "ค่า Line Volume · Analog = null" },
@@ -63,7 +62,6 @@ export function AnalysisPanel({
 
   return (
     <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
-      {/* Tabs Header */}
       <div className="flex border-b border-slate-200 bg-slate-50/50 px-6">
         <button
           type="button"
@@ -91,11 +89,9 @@ export function AnalysisPanel({
         </button>
       </div>
 
-      {/* Tabs Content */}
       <div className="p-6 flex flex-col gap-6 flex-1">
         {activeTab === "parameters" ? (
           <>
-            {/* Metadata Summary Cards */}
             <div className="grid grid-cols-2 gap-4">
               <div className="bg-[#f8fafc] border border-slate-100 rounded-xl p-4 flex flex-col gap-1">
                 <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
@@ -115,7 +111,6 @@ export function AnalysisPanel({
               </div>
             </div>
 
-            {/* Parameters Table */}
             <div className="border border-slate-200/80 rounded-xl overflow-hidden">
               <table className="w-full text-left border-collapse">
                 <thead>
@@ -136,7 +131,6 @@ export function AnalysisPanel({
                     const isFound = param.status === "Found";
                     return (
                       <tr key={param.key} className="hover:bg-slate-50/50 transition-colors">
-                        {/* Parameter Name & Thai description */}
                         <td className="py-4 px-4">
                           <div className="text-xs font-bold text-slate-800">
                             {param.name}
@@ -145,7 +139,6 @@ export function AnalysisPanel({
                             {param.description}
                           </div>
                         </td>
-                        {/* Value */}
                         <td className="py-4 px-4 text-right sm:text-left">
                           <span
                             className={`text-sm font-bold font-mono ${
@@ -155,7 +148,6 @@ export function AnalysisPanel({
                             {param.value !== null ? param.value : "—"}
                           </span>
                         </td>
-                        {/* Status badge */}
                         <td className="py-4 px-4 text-right">
                           <span
                             className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold tracking-tight ${
@@ -190,7 +182,6 @@ export function AnalysisPanel({
 function AnalysisSkeleton() {
   return (
     <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col min-h-[580px] animate-pulse">
-      {/* Tabs Header Skeleton */}
       <div className="flex border-b border-slate-200 bg-slate-50/50 px-6 gap-6">
         <div className="py-4 w-32 h-11 border-b-2 border-slate-200 flex items-center justify-center">
           <div className="bg-slate-200 h-4 w-24 rounded"></div>
@@ -200,9 +191,7 @@ function AnalysisSkeleton() {
         </div>
       </div>
 
-      {/* Tabs Content Skeleton */}
       <div className="p-6 flex flex-col gap-6 flex-1">
-        {/* Metadata Summary Cards */}
         <div className="grid grid-cols-2 gap-4">
           <div className="bg-slate-50 border border-slate-100 rounded-xl p-4 flex flex-col gap-2">
             <div className="bg-slate-200 h-2.5 w-16 rounded"></div>
@@ -214,7 +203,6 @@ function AnalysisSkeleton() {
           </div>
         </div>
 
-        {/* Parameters Table Skeleton */}
         <div className="border border-slate-200/80 rounded-xl overflow-hidden">
           <div className="bg-slate-50 h-10 border-b border-slate-200 flex items-center px-4 justify-between">
             <div className="bg-slate-200 h-3 w-20 rounded"></div>

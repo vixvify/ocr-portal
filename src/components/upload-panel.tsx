@@ -47,7 +47,6 @@ export function UploadPanel({
 
   return (
     <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 flex flex-col gap-6">
-      {/* Header */}
       <div className="flex items-center gap-3">
         <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600 shrink-0 border border-blue-100">
           <FileUp className="w-5 h-5" />
@@ -64,7 +63,6 @@ export function UploadPanel({
 
       <hr className="border-slate-100 -mx-6" />
 
-      {/* Upload Zone / Preview */}
       <div
         onDragOver={handleDragOver}
         onDrop={handleDrop}
@@ -86,13 +84,11 @@ export function UploadPanel({
 
         {selectedImageUrl ? (
           <div className="relative w-full h-full group">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={selectedImageUrl}
               alt={selectedFileName || "Uploaded Meter"}
               className="w-full h-full object-cover rounded-xl"
             />
-            {/* Close Button */}
             <button
               type="button"
               onClick={(e) => {
@@ -105,7 +101,6 @@ export function UploadPanel({
               <X className="w-4 h-4" />
             </button>
 
-            {/* Scanning Overlay Animation when Analyzing */}
             {isAnalyzing && (
               <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-[1px] flex items-center justify-center">
                 <div className="absolute inset-x-0 h-1 bg-gradient-to-r from-transparent via-blue-500 to-transparent opacity-85 animate-[scan_2s_ease-in-out_infinite]"></div>
@@ -131,7 +126,6 @@ export function UploadPanel({
         )}
       </div>
 
-      {/* Action Button */}
       <button
         type="button"
         disabled={!selectedImageUrl || isAnalyzing}
@@ -150,7 +144,6 @@ export function UploadPanel({
 
       <hr className="border-slate-100 -mx-6" />
 
-      {/* Workspace Samples */}
       <div className="flex flex-col gap-3">
         <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider">
           Workspace Samples

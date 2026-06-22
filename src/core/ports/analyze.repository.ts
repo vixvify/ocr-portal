@@ -1,5 +1,6 @@
+import { ApiResponse } from "@/infra/interface/response";
 import { MeterAnalysisResponse } from "../domain/analyze";
 
-export interface IAnalyzeRepository {
-  analyzeImage(file: File | string): Promise<MeterAnalysisResponse>;
+export interface AnalyzeRepository {
+  analyzeImage(file: File | string): Promise<ApiResponse<MeterAnalysisResponse>>;
 }

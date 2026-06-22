@@ -1,5 +1,5 @@
 import { AnalyzeService } from "../core/service/analyze.service";
-import { AnalyzeRepository } from "./repositories/analyze.repository";
+import { AnalyzeRepositoryImpl } from "./repositories/analyze.repository";
 
-const analyzeRepository = new AnalyzeRepository();
+const analyzeRepository = new AnalyzeRepositoryImpl();
 export const analyzeService = new AnalyzeService(analyzeRepository);
