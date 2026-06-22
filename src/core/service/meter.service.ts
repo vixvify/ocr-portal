@@ -16,7 +16,7 @@ export class MeterService {
 
         const fileName = typeof file === "string" ? file : file.name;
         const image = WORKSPACE_IMAGES.find(
-          (img) => img.fileName.toLowerCase() === fileName.toLowerCase()
+          (img) => img.fileName.toLowerCase() === fileName.toLowerCase(),
         );
 
         if (image) {
@@ -41,14 +41,6 @@ export class MeterService {
       const formData = new FormData();
       if (file instanceof File) {
         formData.append("file", file);
-      } else {
-        try {
-          const response = await fetch(`/images/${file}`);
-          const blob = await response.blob();
-          formData.append("file", blob, file);
-        } catch (err) {
-          formData.append("fileName", file);
-        }
       }
 
       const response = await this.meterRepository.analyzeImage(formData);
