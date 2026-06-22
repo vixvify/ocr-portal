@@ -2,7 +2,10 @@
 
 import React, { useState } from "react";
 import { List, Code, CheckCircle2 } from "lucide-react";
-import { MeterAnalysisResponse, ExtractedParameter } from "../core/domain/analyze";
+import {
+  MeterAnalysisResponse,
+  ExtractedParameter,
+} from "../core/domain/analyze";
 
 interface AnalysisPanelProps {
   result: MeterAnalysisResponse | null;
@@ -15,18 +18,48 @@ export function AnalysisPanel({
   isAnalyzing,
   hasAttempted,
 }: AnalysisPanelProps) {
-  const [activeTab, setActiveTab] = useState<"parameters" | "json">("parameters");
+  const [activeTab, setActiveTab] = useState<"parameters" | "json">(
+    "parameters",
+  );
 
   const definitions = [
-    { key: "correct_v_scm", name: "CORRECT V. (SCM) / Vb", description: "ค่า Corrected Volume (SCM) หรือ Vb" },
-    { key: "line_v_m3", name: "LINE V. (M3)", description: "ค่า Line Volume · Analog = null" },
-    { key: "pressure_bar", name: "PRESSURE (Bar)", description: "ความดันแก๊สสะสม (Bar / Baro)" },
-    { key: "temperature_c", name: "TEMPERATURE (°C)", description: "อุณหภูมิแก๊สสะสม (°C)" },
-    { key: "correction_factor", name: "CORRECTION FACTOR (C)", description: "ค่า Correction Factor (C)" },
-    { key: "turbine_v_m3", name: "TURBINE V. (M3)", description: "ปริมาตรแก๊สสะสม M3 (Analog)" },
+    {
+      key: "correct_v_scm",
+      name: "CORRECT V. (SCM) / Vb",
+      description: "ค่า Corrected Volume (SCM) หรือ Vb",
+    },
+    {
+      key: "line_v_m3",
+      name: "LINE V. (M3)",
+      description: "ค่า Line Volume · Analog = null",
+    },
+    {
+      key: "pressure_bar",
+      name: "PRESSURE (Bar)",
+      description: "ความดันแก๊สสะสม (Bar / Baro)",
+    },
+    {
+      key: "temperature_c",
+      name: "TEMPERATURE (°C)",
+      description: "อุณหภูมิแก๊สสะสม (°C)",
+    },
+    {
+      key: "correction_factor",
+      name: "CORRECTION FACTOR (C)",
+      description: "ค่า Correction Factor (C)",
+    },
+    {
+      key: "turbine_v_m3",
+      name: "TURBINE V. (M3)",
+      description: "ปริมาตรแก๊สสะสม M3 (Analog)",
+    },
     { key: "qm_m3_h", name: "Qm (m³/h)", description: "อัตราการไหล Qm" },
     { key: "qb_sm3_h", name: "Qb (Sm³/h)", description: "อัตราการไหล Qb" },
-    { key: "pulse_weight", name: "Pulse Weight", description: "ค่า Pulse weight ของอุปกรณ์" },
+    {
+      key: "pulse_weight",
+      name: "Pulse Weight",
+      description: "ค่า Pulse weight ของอุปกรณ์",
+    },
   ] as const;
 
   const parameters: ExtractedParameter[] = definitions.map((def) => {
@@ -51,9 +84,12 @@ export function AnalysisPanel({
           <List className="w-8 h-8" />
         </div>
         <div>
-          <h3 className="text-base font-bold text-slate-800">Awaiting analysis</h3>
+          <h3 className="text-base font-bold text-slate-800">
+            Awaiting analysis
+          </h3>
           <p className="text-sm text-slate-500 mt-1 max-w-xs leading-relaxed">
-            Please upload a meter image or select one of the workspace images, then click <strong>Analyze Meter Image</strong>.
+            Please upload a meter image or select one of the workspace images,
+            then click <strong>Analyze Meter Image</strong>.
           </p>
         </div>
       </div>
@@ -130,7 +166,10 @@ export function AnalysisPanel({
                   {parameters.map((param) => {
                     const isFound = param.status === "Found";
                     return (
-                      <tr key={param.key} className="hover:bg-slate-50/50 transition-colors">
+                      <tr
+                        key={param.key}
+                        className="hover:bg-slate-50/50 transition-colors"
+                      >
                         <td className="py-4 px-4">
                           <div className="text-xs font-bold text-slate-800">
                             {param.name}
@@ -156,7 +195,9 @@ export function AnalysisPanel({
                                 : "bg-slate-50 text-slate-400 border border-slate-100"
                             }`}
                           >
-                            {isFound && <CheckCircle2 className="w-3 h-3 text-emerald-500 shrink-0" />}
+                            {isFound && (
+                              <CheckCircle2 className="w-3 h-3 text-emerald-500 shrink-0" />
+                            )}
                             {param.status}
                           </span>
                         </td>
@@ -169,8 +210,10 @@ export function AnalysisPanel({
           </>
         ) : (
           <div className="flex-1 flex flex-col">
-            <div className="bg-slate-900 rounded-xl p-4 overflow-x-auto border border-slate-850 flex-1 font-mono text-xs text-slate-300 leading-relaxed shadow-inner">
-              <pre className="whitespace-pre">{JSON.stringify(result, null, 2)}</pre>
+            <div className="bg-[#f8fafc] rounded-xl p-4 overflow-x-auto border border-slate-200 flex-1 font-mono text-xs text-slate-600 leading-relaxed shadow-sm">
+              <pre className="whitespace-pre">
+                {JSON.stringify(result, null, 2)}
+              </pre>
             </div>
           </div>
         )}
@@ -211,7 +254,10 @@ function AnalysisSkeleton() {
           </div>
           <div className="divide-y divide-slate-100">
             {[1, 2, 3, 4, 5, 6].map((i) => (
-              <div key={i} className="py-4 px-4 flex items-center justify-between">
+              <div
+                key={i}
+                className="py-4 px-4 flex items-center justify-between"
+              >
                 <div className="flex flex-col gap-1.5">
                   <div className="bg-slate-200 h-3 w-32 rounded"></div>
                   <div className="bg-slate-150 h-2.5 w-48 rounded"></div>

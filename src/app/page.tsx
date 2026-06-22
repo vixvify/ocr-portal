@@ -7,7 +7,7 @@ import { UploadPanel } from "../components/upload-panel";
 import { AnalysisPanel } from "../components/analysis-panel";
 import { WorkspaceImage, MeterAnalysisResponse } from "../core/domain/analyze";
 import { WORKSPACE_IMAGES } from "../lib/data";
-import { analyzeService } from "../infra/container";
+import { meterService } from "../infra/container";
 
 export default function Home() {
   const [images, setImages] = useState<WorkspaceImage[]>([]);
@@ -17,18 +17,11 @@ export default function Home() {
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [hasAttempted, setHasAttempted] = useState(false);
-  const [analysisResult, setAnalysisResult] = useState<MeterAnalysisResponse | null>(null);
+  const [analysisResult, setAnalysisResult] =
+    useState<MeterAnalysisResponse | null>(null);
 
   useEffect(() => {
     setImages(WORKSPACE_IMAGES);
-    const defaultImage = WORKSPACE_IMAGES.find(
-      (img) => img.fileName === "test5.jpg"
-    );
-    if (defaultImage) {
-      setSelectedImageUrl(defaultImage.imageUrl);
-      setSelectedFileName(defaultImage.fileName);
-      setSelectedImageId(defaultImage.id);
-    }
   }, []);
 
   const handleSelectImage = (image: WorkspaceImage) => {
@@ -94,7 +87,7 @@ export default function Home() {
 
     try {
       const param = uploadedFile || selectedFileName || "custom.jpg";
-      const response = await analyzeService.analyzeImage(param);
+      const response = await meterService.analyzeImage(param);
       setAnalysisResult(response);
     } catch (err) {
       console.error("Analysis failed:", err);

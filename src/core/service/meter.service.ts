@@ -1,9 +1,9 @@
 import { MeterAnalysisResponse } from "../domain/analyze";
-import { AnalyzeRepository } from "../ports/analyze.repository";
+import { MeterRepository } from "../ports/meter.repository";
 import { WORKSPACE_IMAGES } from "@/lib/data";
 
-export class AnalyzeService {
-  constructor(private readonly analyzeRepository: AnalyzeRepository) {}
+export class MeterService {
+  constructor(private readonly meterRepository: MeterRepository) {}
 
   async analyzeImage(file: File | string): Promise<MeterAnalysisResponse> {
     try {
@@ -51,7 +51,7 @@ export class AnalyzeService {
         }
       }
 
-      const response = await this.analyzeRepository.analyzeImage(formData);
+      const response = await this.meterRepository.analyzeImage(formData);
       if (response.error) {
         throw new Error(response.error);
       }

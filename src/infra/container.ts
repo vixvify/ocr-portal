@@ -1,5 +1,5 @@
-import { AnalyzeService } from "../core/service/analyze.service";
-import { AnalyzeRepositoryImpl } from "./repositories/analyze.repository";
+import { MeterService } from "../core/service/meter.service";
+import { MeterRepositoryImpl } from "./repositories/meter.repository";
 
-const analyzeRepository = new AnalyzeRepositoryImpl();
-export const analyzeService = new AnalyzeService(analyzeRepository);
+const meterRepository = new MeterRepositoryImpl();
+export const meterService = new MeterService(meterRepository);
