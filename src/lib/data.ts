@@ -1,98 +1,148 @@
-export interface BoundingBox {
-  id: string;
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-  label: 'serial' | 'value';
-  confidence: number;
-  value: string;
-}
+import { WorkspaceSample } from "../core/domain/analyze";
 
-export type MeterType = 'electricity' | 'water';
-export type ReadingStatus = 'pending' | 'approved' | 'flagged';
-
-export interface MeterReading {
-  id: string;
-  fileName: string;
-  meterType: MeterType;
-  serialNumber: string;
-  serialNumberConfidence: number;
-  currentReading: string;
-  currentReadingConfidence: number;
-  previousReading: string;
-  unit: 'kWh' | 'm³';
-  status: ReadingStatus;
-  uploadedAt: string;
-  uploadedBy: string;
-  boundingBoxes: BoundingBox[];
-  mockMeterStyle: 'digital-electric' | 'analog-electric' | 'water-dial';
-}
-
-export interface DashboardStats {
-  total: number;
-  pending: number;
-  approved: number;
-  flagged: number;
-  avgConfidence: number;
-}
-
-export const INITIAL_MOCK_READINGS: MeterReading[] = [
+export const WORKSPACE_SAMPLES: WorkspaceSample[] = [
   {
-    id: 'READ-2026-001',
-    fileName: 'elec_meter_floor2_west.jpg',
-    meterType: 'electricity',
-    serialNumber: 'EL-982341-A',
-    serialNumberConfidence: 98.4,
-    currentReading: '12450.3',
-    currentReadingConfidence: 96.8,
-    previousReading: '12140.1',
-    unit: 'kWh',
-    status: 'approved',
-    uploadedAt: '2026-06-16T06:15:00Z',
-    uploadedBy: 'สมชาย รักดี',
-    mockMeterStyle: 'digital-electric',
-    boundingBoxes: [
-      { id: 'bb-1', x: 25, y: 15, width: 50, height: 12, label: 'serial', confidence: 0.98, value: 'EL-982341-A' },
-      { id: 'bb-2', x: 30, y: 45, width: 40, height: 18, label: 'value', confidence: 0.97, value: '12450.3' }
-    ]
+    id: "sample-1",
+    fileName: "ItronPage3.jpeg",
+    imageUrl: "/images/ItronPage3.jpeg",
+    mockResponse: {
+      meter_type: "Digital",
+      detected_format: "itron digital index screen page",
+      correct_v_scm: "12,450.3",
+      line_v_m3: "12,140.1",
+      pressure_bar: "2.415",
+      temperature_c: "22.5",
+      correction_factor: "1.0256",
+      turbine_v_m3: "12,135.8",
+      qm_m3_h: "145.2",
+      qb_sm3_h: "148.9",
+      pulse_weight: "1.0",
+    },
   },
   {
-    id: 'READ-2026-002',
-    fileName: 'water_meter_front_pump.jpg',
-    meterType: 'water',
-    serialNumber: 'WT-12490-B',
-    serialNumberConfidence: 78.5,
-    currentReading: '00342.8',
-    currentReadingConfidence: 81.2,
-    previousReading: '00310.5',
-    unit: 'm³',
-    status: 'pending',
-    uploadedAt: '2026-06-16T07:45:00Z',
-    uploadedBy: 'วิชัย เก่งการค้า',
-    mockMeterStyle: 'water-dial',
-    boundingBoxes: [
-      { id: 'bb-3', x: 35, y: 12, width: 30, height: 10, label: 'serial', confidence: 0.78, value: 'WT-12490-B' },
-      { id: 'bb-4', x: 20, y: 38, width: 60, height: 24, label: 'value', confidence: 0.81, value: '00342.8' }
-    ]
+    id: "sample-2",
+    fileName: "testpic.png",
+    imageUrl: "/images/testpic.png",
+    mockResponse: {
+      meter_type: "Analog",
+      detected_format: "analog mechanical drum index",
+      correct_v_scm: null,
+      line_v_m3: "00,342.8",
+      pressure_bar: null,
+      temperature_c: null,
+      correction_factor: null,
+      turbine_v_m3: "00,342.8",
+      qm_m3_h: null,
+      qb_sm3_h: null,
+      pulse_weight: null,
+    },
   },
   {
-    id: 'READ-2026-003',
-    fileName: 'elec_meter_server_room.jpg',
-    meterType: 'electricity',
-    serialNumber: 'EL-102948-C',
-    serialNumberConfidence: 99.1,
-    currentReading: '84920.1',
-    currentReadingConfidence: 62.4,
-    previousReading: '79040.2',
-    unit: 'kWh',
-    status: 'flagged',
-    uploadedAt: '2026-06-16T08:05:00Z',
-    uploadedBy: 'วิภาดา พรหมดี',
-    mockMeterStyle: 'analog-electric',
-    boundingBoxes: [
-      { id: 'bb-5', x: 28, y: 18, width: 44, height: 12, label: 'serial', confidence: 0.99, value: 'EL-102948-C' },
-      { id: 'bb-6', x: 22, y: 48, width: 56, height: 20, label: 'value', confidence: 0.62, value: '84920.1' }
-    ]
-  }
+    id: "sample-3",
+    fileName: "test2.jpg",
+    imageUrl: "/images/test2.jpg",
+    mockResponse: {
+      meter_type: "Digital",
+      detected_format: "digital screen index value page",
+      correct_v_scm: "84,920.1",
+      line_v_m3: "79,040.2",
+      pressure_bar: "15.420",
+      temperature_c: "28.1",
+      correction_factor: "1.0743",
+      turbine_v_m3: null,
+      qm_m3_h: "850.4",
+      qb_sm3_h: "913.6",
+      pulse_weight: null,
+    },
+  },
+  {
+    id: "sample-4",
+    fileName: "test3.jpg",
+    imageUrl: "/images/test3.jpg",
+    mockResponse: {
+      meter_type: "Digital",
+      detected_format: "digital screen flow parameters",
+      correct_v_scm: null,
+      line_v_m3: null,
+      pressure_bar: "5.120",
+      temperature_c: "24.0",
+      correction_factor: "1.0112",
+      turbine_v_m3: null,
+      qm_m3_h: "220.0",
+      qb_sm3_h: "222.4",
+      pulse_weight: null,
+    },
+  },
+  {
+    id: "sample-5",
+    fileName: "test4.jpeg",
+    imageUrl: "/images/test4.jpeg",
+    mockResponse: {
+      meter_type: "Analog",
+      detected_format: "analog drum dial counter",
+      correct_v_scm: null,
+      line_v_m3: "41,200.0",
+      pressure_bar: null,
+      temperature_c: null,
+      correction_factor: null,
+      turbine_v_m3: null,
+      qm_m3_h: null,
+      qb_sm3_h: null,
+      pulse_weight: "10.0",
+    },
+  },
+  {
+    id: "sample-6",
+    fileName: "test5.jpg",
+    imageUrl: "/images/test5.jpg",
+    mockResponse: {
+      meter_type: "Digital",
+      detected_format: "digital screen index value page",
+      correct_v_scm: null,
+      line_v_m3: null,
+      pressure_bar: "9.656",
+      temperature_c: "25",
+      correction_factor: "9.3648",
+      turbine_v_m3: null,
+      qm_m3_h: "477",
+      qb_sm3_h: "4,467.4",
+      pulse_weight: null,
+    },
+  },
+  {
+    id: "sample-7",
+    fileName: "test6.jpg",
+    imageUrl: "/images/test6.jpg",
+    mockResponse: {
+      meter_type: "Digital",
+      detected_format: "digital screen simple layout",
+      correct_v_scm: "3,124.5",
+      line_v_m3: null,
+      pressure_bar: "1.013",
+      temperature_c: "20.0",
+      correction_factor: "1.0000",
+      turbine_v_m3: null,
+      qm_m3_h: "5.4",
+      qb_sm3_h: "5.4",
+      pulse_weight: null,
+    },
+  },
+  {
+    id: "sample-8",
+    fileName: "test7.jpg",
+    imageUrl: "/images/test7.jpg",
+    mockResponse: {
+      meter_type: "Analog",
+      detected_format: "analog gas volume index",
+      correct_v_scm: null,
+      line_v_m3: "00,180.2",
+      pressure_bar: null,
+      temperature_c: null,
+      correction_factor: null,
+      turbine_v_m3: "00,180.2",
+      qm_m3_h: null,
+      qb_sm3_h: null,
+      pulse_weight: null,
+    },
+  },
 ];

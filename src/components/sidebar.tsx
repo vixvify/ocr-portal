@@ -15,7 +15,7 @@ export function Sidebar() {
       <div className="flex-1 py-3 flex flex-col gap-1">
         <div className="px-4 py-2 text-xs font-semibold text-white bg-blue-800/60 border-l-4 border-blue-500 flex items-center gap-2.5">
           <Layers className="w-4 h-4 text-blue-400" />
-          <span>Update Meter Readings</span>
+          <span>Meter Readings</span>
         </div>
       </div>
     </aside>

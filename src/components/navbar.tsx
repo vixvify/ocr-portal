@@ -24,13 +24,8 @@ export function Navbar() {
         </div>
 
         <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2 bg-blue-900 text-white rounded-md py-1 px-3">
-            <span className="text-[10px] font-bold uppercase tracking-wider">
-              Role: Admin
-            </span>
-          </div>
           <div className="w-9 h-9 rounded-full bg-slate-200 border border-slate-300 flex items-center justify-center font-bold text-xs text-slate-700">
-            U
+            V
           </div>
         </div>
       </div>
