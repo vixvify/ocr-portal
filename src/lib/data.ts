@@ -1,6 +1,6 @@
-import { WorkspaceSample } from "../core/domain/analyze";
+import { WorkspaceImage } from "../core/domain/analyze";
 
-export const WORKSPACE_SAMPLES: WorkspaceSample[] = [
+export const WORKSPACE_IMAGES: WorkspaceImage[] = [
   {
     id: "sample-1",
     fileName: "ItronPage3.jpeg",

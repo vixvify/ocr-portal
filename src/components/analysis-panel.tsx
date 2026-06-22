@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { List, Code, CheckCircle2, AlertCircle } from "lucide-react";
+import { List, Code, CheckCircle2 } from "lucide-react";
 import { MeterAnalysisResponse, ExtractedParameter } from "../core/domain/analyze";
 
 interface AnalysisPanelProps {
@@ -53,7 +53,7 @@ export function AnalysisPanel({
         <div>
           <h3 className="text-base font-bold text-slate-800">Awaiting analysis</h3>
           <p className="text-sm text-slate-500 mt-1 max-w-xs leading-relaxed">
-            Please upload a meter image or select one of the workspace samples, then click <strong>Analyze Meter Image</strong>.
+            Please upload a meter image or select one of the workspace images, then click <strong>Analyze Meter Image</strong>.
           </p>
         </div>
       </div>

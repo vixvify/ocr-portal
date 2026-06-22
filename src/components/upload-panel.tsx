@@ -1,16 +1,17 @@
 "use client";
 
 import React, { useRef } from "react";
-import { FileUp, Cpu, X, Image as ImageIcon } from "lucide-react";
-import { WorkspaceSample } from "../core/domain/analyze";
-import { WORKSPACE_SAMPLES } from "../lib/data";
+import { FileUp, Cpu, X, ImageIcon } from "lucide-react";
+import { WorkspaceImage } from "../core/domain/analyze";
 
 interface UploadPanelProps {
   selectedImageUrl: string | null;
   selectedFileName: string | null;
-  selectedSampleId: string | null;
+  selectedImageId: string | null;
   isAnalyzing: boolean;
-  onSelectSample: (sample: WorkspaceSample) => void;
+  images: WorkspaceImage[];
+  onSelectImage: (image: WorkspaceImage) => void;
+  onDeleteImage: (id: string) => void;
   onClearImage: () => void;
   onUploadFile: (file: File) => void;
   onAnalyze: () => void;
@@ -19,9 +20,11 @@ interface UploadPanelProps {
 export function UploadPanel({
   selectedImageUrl,
   selectedFileName,
-  selectedSampleId,
+  selectedImageId,
   isAnalyzing,
-  onSelectSample,
+  images,
+  onSelectImage,
+  onDeleteImage,
   onClearImage,
   onUploadFile,
   onAnalyze,
@@ -146,18 +149,17 @@ export function UploadPanel({
 
       <div className="flex flex-col gap-3">
         <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider">
-          Workspace Samples
+          Workspace Images
         </h3>
 
         <div className="grid grid-cols-2 gap-2.5">
-          {WORKSPACE_SAMPLES.map((sample) => {
-            const isSelected = selectedSampleId === sample.id;
+          {images.map((image) => {
+            const isSelected = selectedImageId === image.id;
             return (
-              <button
-                key={sample.id}
-                type="button"
-                onClick={() => onSelectSample(sample)}
-                className={`flex items-center gap-2.5 p-2.5 rounded-lg border text-left transition-all duration-150 group cursor-pointer ${
+              <div
+                key={image.id}
+                onClick={() => onSelectImage(image)}
+                className={`flex items-center gap-2.5 p-2.5 rounded-lg border text-left transition-all duration-150 group cursor-pointer relative ${
                   isSelected
                     ? "border-blue-500 bg-blue-50/50 ring-1 ring-blue-500"
                     : "border-slate-200 hover:border-slate-300 hover:bg-slate-50/50"
@@ -168,14 +170,25 @@ export function UploadPanel({
                 }`}>
                   <ImageIcon className={`w-4 h-4 ${isSelected ? "text-blue-500" : "text-slate-400 group-hover:text-slate-500"}`} />
                 </div>
-                <div className="min-w-0 flex-1">
+                <div className="min-w-0 flex-1 pr-4">
                   <p className={`text-xs font-semibold truncate ${
                     isSelected ? "text-blue-700" : "text-slate-700 group-hover:text-slate-900"
                   }`}>
-                    {sample.fileName}
+                    {image.fileName}
                   </p>
                 </div>
-              </button>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onDeleteImage(image.id);
+                  }}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 w-6 h-6 rounded-md hover:bg-slate-100 text-slate-400 hover:text-rose-600 flex items-center justify-center transition-all opacity-0 group-hover:opacity-100 focus:opacity-100 cursor-pointer"
+                  aria-label="Delete image"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              </div>
             );
           })}
         </div>

@@ -5,33 +5,37 @@ import { Navbar } from "../components/navbar";
 import { Sidebar } from "../components/sidebar";
 import { UploadPanel } from "../components/upload-panel";
 import { AnalysisPanel } from "../components/analysis-panel";
-import { WorkspaceSample, MeterAnalysisResponse } from "../core/domain/analyze";
-import { WORKSPACE_SAMPLES } from "../lib/data";
+import { WorkspaceImage, MeterAnalysisResponse } from "../core/domain/analyze";
+import { WORKSPACE_IMAGES } from "../lib/data";
 import { analyzeService } from "../infra/container";
 
 export default function Home() {
+  const [images, setImages] = useState<WorkspaceImage[]>([]);
   const [selectedImageUrl, setSelectedImageUrl] = useState<string | null>(null);
   const [selectedFileName, setSelectedFileName] = useState<string | null>(null);
-  const [selectedSampleId, setSelectedSampleId] = useState<string | null>(null);
+  const [selectedImageId, setSelectedImageId] = useState<string | null>(null);
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [hasAttempted, setHasAttempted] = useState(false);
   const [analysisResult, setAnalysisResult] = useState<MeterAnalysisResponse | null>(null);
 
   useEffect(() => {
-    const defaultSample = WORKSPACE_SAMPLES.find(
-      (s) => s.fileName === "test5.jpg"
+    setImages(WORKSPACE_IMAGES);
+    const defaultImage = WORKSPACE_IMAGES.find(
+      (img) => img.fileName === "test5.jpg"
     );
-    if (defaultSample) {
-      setSelectedImageUrl(defaultSample.imageUrl);
-      setSelectedFileName(defaultSample.fileName);
-      setSelectedSampleId(defaultSample.id);
+    if (defaultImage) {
+      setSelectedImageUrl(defaultImage.imageUrl);
+      setSelectedFileName(defaultImage.fileName);
+      setSelectedImageId(defaultImage.id);
     }
   }, []);
 
-  const handleSelectSample = (sample: WorkspaceSample) => {
-    setSelectedImageUrl(sample.imageUrl);
-    setSelectedFileName(sample.fileName);
-    setSelectedSampleId(sample.id);
+  const handleSelectImage = (image: WorkspaceImage) => {
+    setSelectedImageUrl(image.imageUrl);
+    setSelectedFileName(image.fileName);
+    setSelectedImageId(image.id);
+    setUploadedFile(null);
     setAnalysisResult(null);
     setHasAttempted(false);
   };
@@ -39,18 +43,47 @@ export default function Home() {
   const handleClearImage = () => {
     setSelectedImageUrl(null);
     setSelectedFileName(null);
-    setSelectedSampleId(null);
+    setSelectedImageId(null);
+    setUploadedFile(null);
     setAnalysisResult(null);
     setHasAttempted(false);
   };
 
   const handleUploadFile = (file: File) => {
     const objectUrl = URL.createObjectURL(file);
-    setSelectedImageUrl(objectUrl);
-    setSelectedFileName(file.name);
-    setSelectedSampleId(null);
+    const newImage: WorkspaceImage = {
+      id: `custom-${Date.now()}`,
+      fileName: file.name,
+      imageUrl: objectUrl,
+      mockResponse: {
+        meter_type: "Digital",
+        detected_format: "digital screen custom index",
+        correct_v_scm: "2,345.1",
+        line_v_m3: "2,300.2",
+        pressure_bar: "3.245",
+        temperature_c: "21.8",
+        correction_factor: "1.0084",
+        turbine_v_m3: null,
+        qm_m3_h: "12.5",
+        qb_sm3_h: "12.6",
+        pulse_weight: null,
+      },
+    };
+
+    setImages((prev) => [newImage, ...prev]);
+    setSelectedImageUrl(newImage.imageUrl);
+    setSelectedFileName(newImage.fileName);
+    setSelectedImageId(newImage.id);
+    setUploadedFile(file);
     setAnalysisResult(null);
     setHasAttempted(false);
+  };
+
+  const handleDeleteImage = (imageId: string) => {
+    setImages((prev) => prev.filter((img) => img.id !== imageId));
+    if (selectedImageId === imageId) {
+      handleClearImage();
+    }
   };
 
   const handleAnalyze = async () => {
@@ -60,9 +93,8 @@ export default function Home() {
     setHasAttempted(true);
 
     try {
-      const response = await analyzeService.analyzeImage(
-        selectedFileName || "custom_uploaded_meter.jpg"
-      );
+      const param = uploadedFile || selectedFileName || "custom.jpg";
+      const response = await analyzeService.analyzeImage(param);
       setAnalysisResult(response);
     } catch (err) {
       console.error("Analysis failed:", err);
@@ -85,9 +117,11 @@ export default function Home() {
               <UploadPanel
                 selectedImageUrl={selectedImageUrl}
                 selectedFileName={selectedFileName}
-                selectedSampleId={selectedSampleId}
+                selectedImageId={selectedImageId}
                 isAnalyzing={isAnalyzing}
-                onSelectSample={handleSelectSample}
+                images={images}
+                onSelectImage={handleSelectImage}
+                onDeleteImage={handleDeleteImage}
                 onClearImage={handleClearImage}
                 onUploadFile={handleUploadFile}
                 onAnalyze={handleAnalyze}

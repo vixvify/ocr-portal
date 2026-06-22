@@ -22,7 +22,7 @@ export interface ExtractedParameter {
   status: ParameterStatus;
 }
 
-export interface WorkspaceSample {
+export interface WorkspaceImage {
   id: string;
   fileName: string;
   imageUrl: string;
